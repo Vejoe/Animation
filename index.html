@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>DSP3 60s Demo — HK Market</title>
+<title>DSP3 60s Demo — Final</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -23,21 +23,22 @@
   .scene {
     position: absolute; inset: 0; opacity: 0; visibility: hidden;
     transition: opacity .6s ease;
-    display: flex; flex-direction: column; padding: 64px 72px;
+    display: flex; flex-direction: column; padding: 56px 72px;
   }
   .scene.active { opacity: 1; visibility: visible; }
 
   .topbar {
     display: flex; justify-content: space-between; align-items: baseline;
     font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
-    color: #8a857c; margin-bottom: 36px;
+    color: #8a857c; margin-bottom: 32px;
   }
   .topbar .brand {
     color: #111; font-family: Georgia, serif;
     font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: none;
   }
 
-  #scene-intro { justify-content: center; }
+  /* ---------- Intro ---------- */
+  #scene-intro { justify-content: center; padding: 64px 72px; }
   .intro-brand {
     font-family: Georgia, serif; font-size: 72px; font-weight: 700;
     letter-spacing: 2px; line-height: 1; margin-bottom: 18px;
@@ -59,6 +60,7 @@
     max-width: 560px; line-height: 1.7;
   }
 
+  /* ---------- Market ---------- */
   .map-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
   .map-head h2 {
     font-family: Georgia, serif; font-weight: 400;
@@ -119,19 +121,20 @@
   }
   .market-list span.lit { color: #fff; background: #c8452d; border-color: #c8452d; }
 
+  /* ---------- Feature ---------- */
   .feature-wrap { flex: 1; display: flex; gap: 44px; min-height: 0; }
-  .feature-left { width: 340px; display: flex; flex-direction: column; flex-shrink: 0; }
+  .feature-left { width: 360px; display: flex; flex-direction: column; flex-shrink: 0; justify-content: center; }
   .feature-group {
     font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
     color: #c8452d; margin-bottom: 4px;
   }
-  .feature-no { font-family: Georgia, serif; font-size: 88px; line-height: 1; color: #c8452d; }
+  .feature-no { font-family: Georgia, serif; font-size: 84px; line-height: 1; color: #c8452d; }
   .feature-name {
-    font-family: Georgia, serif; font-size: 34px; line-height: 1.12;
-    margin-top: 4px; letter-spacing: -0.5px;
+    font-family: Georgia, serif; font-size: 28px; line-height: 1.2;
+    margin-top: 6px; letter-spacing: -0.3px;
   }
   .feature-value {
-    margin-top: 18px; font-size: 15px; line-height: 1.7; color: #6f6a61;
+    margin-top: 18px; font-size: 14px; line-height: 1.7; color: #6f6a61;
     padding-top: 16px; border-top: 1px solid #ddd8ce;
   }
   .feature-right { flex: 1; display: flex; min-width: 0; }
@@ -150,7 +153,8 @@
   }
   @keyframes sweep { 0% { left: -30%; } 65%, 100% { left: 130%; } }
 
-  #scene-ai { justify-content: center; }
+  /* ---------- AI ---------- */
+  #scene-ai { justify-content: center; padding: 64px 72px; }
   .ai-kicker { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #c8452d; margin-bottom: 20px; }
   .ai-title { font-family: Georgia, serif; font-weight: 400; font-size: 130px; line-height: .9; letter-spacing: -3px; }
   .ai-title em { font-style: italic; color: #c8452d; }
@@ -169,27 +173,38 @@
   }
   @keyframes slide { 0% { left: -40%; } 65%, 100% { left: 100%; } }
 
-  .summary-title { font-family: Georgia, serif; font-weight: 400; font-size: 44px; letter-spacing: -1px; margin-bottom: 6px; }
-  .summary-sub { font-size: 13px; color: #8a857c; margin-bottom: 28px; letter-spacing: .5px; }
-  .grid-wrap { display: flex; flex-direction: column; gap: 18px; }
-  .grid-row-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #c8452d; margin-bottom: 8px; }
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: #ddd8ce; border: 1px solid #ddd8ce; }
-  .grid-card {
-    background: #f7f5f0; padding: 20px 16px; min-height: 100px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    opacity: .32; transition: all .4s ease;
+  /* ---------- Summary（最后一个画面） ---------- */
+  .summary-title {
+    font-family: Georgia, serif; font-weight: 400;
+    font-size: 40px; letter-spacing: -1px; margin-bottom: 4px;
   }
-  .grid-card .g-no { font-size: 10px; letter-spacing: 2px; color: #c8452d; }
-  .grid-card .g-name { font-family: Georgia, serif; font-size: 15px; color: #111; line-height: 1.25; }
+  .summary-sub { font-size: 12px; color: #8a857c; margin-bottom: 20px; letter-spacing: .5px; }
+  .grid-wrap { display: flex; flex-direction: column; gap: 14px; }
+  .grid-row-label {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: #c8452d; margin-bottom: 6px;
+  }
+  .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: #ddd8ce;
+    border: 1px solid #ddd8ce;
+  }
+  .grid-card {
+    background: #f7f5f0; padding: 12px 14px; min-height: 66px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    opacity: .3; transition: all .4s ease;
+  }
+  .grid-card .g-no { font-size: 9px; letter-spacing: 2px; color: #c8452d; }
+  .grid-card .g-name {
+    font-family: Georgia, serif; font-size: 12.5px; color: #111;
+    line-height: 1.25;
+  }
   .grid-card.lit { opacity: 1; background: #fffdf8; }
-
-  .summary-line { margin-top: 28px; font-size: 15px; color: #6f6a61; display: flex; gap: 10px; align-items: baseline; }
-  .summary-line b { font-family: Georgia, serif; font-size: 24px; color: #c8452d; font-weight: 400; }
-
-  #scene-outro { justify-content: center; }
-  .outro-logo { font-family: Georgia, serif; font-size: 150px; letter-spacing: -4px; line-height: 1; }
-  .outro-logo em { font-style: italic; color: #c8452d; }
-  .outro-sub { margin-top: 18px; font-size: 15px; letter-spacing: 4px; text-transform: uppercase; color: #8a857c; }
+  .summary-line {
+    margin-top: 18px; font-size: 14px; color: #6f6a61;
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  .summary-line b { font-family: Georgia, serif; font-size: 22px; color: #c8452d; font-weight: 400; }
 
   #replay {
     position: absolute; right: 24px; bottom: 20px; z-index: 100;
@@ -203,6 +218,7 @@
 <div id="stage">
   <div id="progress"></div>
 
+  <!-- 1. Intro -->
   <section class="scene active" id="scene-intro">
     <div class="intro-brand">DSP3</div>
     <div class="kicker">2026 Review</div>
@@ -210,6 +226,7 @@
     <p class="intro-sub">A year of shipping features across mobile and browser, expanding markets, and pushing Super AI further.</p>
   </section>
 
+  <!-- 2. Market -->
   <section class="scene" id="scene-map">
     <div class="topbar"><span class="brand">DSP3</span><span>Market Coverage</span></div>
     <div class="map-head">
@@ -222,6 +239,7 @@
     </div>
   </section>
 
+  <!-- 3. Feature -->
   <section class="scene" id="scene-feature">
     <div class="topbar"><span class="brand">DSP3</span><span>Feature Highlights</span></div>
     <div class="feature-wrap">
@@ -237,6 +255,7 @@
     </div>
   </section>
 
+  <!-- 4. AI -->
   <section class="scene" id="scene-ai">
     <div class="ai-kicker">Introducing</div>
     <div class="ai-title">Super <em>AI</em></div>
@@ -244,20 +263,22 @@
     <div class="ai-line"></div>
   </section>
 
+  <!-- 5. Summary（最后画面） -->
   <section class="scene" id="scene-summary">
     <div class="topbar"><span class="brand">DSP3</span><span>Year in Review</span></div>
     <div class="summary-title">Everything, in one place.</div>
-    <div class="summary-sub">10 features · 8 markets · one DSP3</div>
+    <div class="summary-sub">15 features · 8 markets · one DSP3</div>
     <div class="grid-wrap">
-      <div><div class="grid-row-label">Mobile</div><div class="grid" id="gridMobile"></div></div>
-      <div><div class="grid-row-label">Browser</div><div class="grid" id="gridBrowser"></div></div>
+      <div>
+        <div class="grid-row-label">Mobile · 9 features</div>
+        <div class="grid" id="gridMobile"></div>
+      </div>
+      <div>
+        <div class="grid-row-label">Browser · 6 features</div>
+        <div class="grid" id="gridBrowser"></div>
+      </div>
     </div>
-    <div class="summary-line"><b>10</b> Features &nbsp;·&nbsp; <b>8</b> Markets &nbsp;·&nbsp; <b>1</b> DSP3</div>
-  </section>
-
-  <section class="scene" id="scene-outro">
-    <div class="outro-logo">DSP<em>3</em></div>
-    <div class="outro-sub">Let growth continue</div>
+    <div class="summary-line"><b>15</b> Features &nbsp;·&nbsp; <b>8</b> Markets &nbsp;·&nbsp; <b>1</b> DSP3</div>
   </section>
 
   <button id="replay">Replay</button>
@@ -267,22 +288,30 @@
 <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
 <script>
+  /* ================= 功能：Mobile 9 + Browser 6 = 15 ================= */
   const FEATURES = [
-    { group: "Mobile",  name: "Mobile Device Setup", value: "Guided setup that gets devices ready in minutes." },
-    { group: "Mobile",  name: "Mobile Login", value: "Fast, secure sign-in on every mobile device." },
-    { group: "Mobile",  name: "Mobile Manage Security", value: "Full control over security settings, in-app." },
-    { group: "Mobile",  name: "Mobile Change PIN", value: "Self-service PIN changes, no support call needed." },
-    { group: "Mobile",  name: "Mobile ITS / Reauth", value: "Step-up verification when it matters most." },
-    { group: "Mobile",  name: "Global Account Linkage", value: "Link accounts across markets in one flow." },
-    { group: "Browser", name: "Browser Logon", value: "A seamless web sign-in experience." },
-    { group: "Browser", name: "Browser Manage Security", value: "Manage security preferences from the browser." },
-    { group: "Browser", name: "Browser Global Account Linkage", value: "Connect global accounts from the web." },
-    { group: "Browser", name: "Browser TDS/Reauth", value: "Browser-side reauthentication, done right." }
+    // Mobile
+    { group: "Mobile",  name: "Mobile Device Setup",                          value: "Guided setup that gets devices ready in minutes." },
+    { group: "Mobile",  name: "Mobile Login",                                 value: "Fast, secure sign-in on every mobile device." },
+    { group: "Mobile",  name: "Mobile Manage Security",                       value: "Full control over security settings, in-app." },
+    { group: "Mobile",  name: "Mobile ITS (Transaction Payment Journey) / Reauth", value: "Step-up verification across the payment journey." },
+    { group: "Mobile",  name: "Global Account Linkage",                       value: "Link accounts across markets in one flow." },
+    { group: "Mobile",  name: "OpenBanking AIS/PIS",                          value: "Account information and payment initiation, mobile." },
+    { group: "Mobile",  name: "wco Journey",                                  value: "A smoother journey for every mobile user." },
+    { group: "Mobile",  name: "Mobile Device Switch",                         value: "Switch devices without losing a step." },
+    { group: "Mobile",  name: "IAuth Integration",                            value: "Seamless identity authentication built in." },
+    // Browser
+    { group: "Browser", name: "Browser Logon (Hardtoken & Mobile Approve)",   value: "Secure web sign-in with hardtoken or mobile approval." },
+    { group: "Browser", name: "Manage Security (browser)",                    value: "Manage security preferences from the browser." },
+    { group: "Browser", name: "TDS (Transaction Payment Journey) / Reauth",   value: "Browser-side transaction verification, done right." },
+    { group: "Browser", name: "Global Account Linkage (browser)",             value: "Connect global accounts from the web." },
+    { group: "Browser", name: "WMT (delegate)",                               value: "Delegate access with confidence." },
+    { group: "Browser", name: "OpenBanking AIS/PIS (browser)",                value: "Account information and payment initiation, web." }
   ];
-  const MOBILE_FEATURES = FEATURES.filter(f => f.group === "Mobile");
+  const MOBILE_FEATURES  = FEATURES.filter(f => f.group === "Mobile");
   const BROWSER_FEATURES = FEATURES.filter(f => f.group === "Browser");
 
-  /* 市场：UK → CN → US → UAE → JE → MY → IN → HK */
+  /* ================= 市场 ================= */
   const MARKETS = [
     { label: "UK",  lon: -3.44,  lat: 55.38 },
     { label: "CN",  lon: 104.20, lat: 35.86 },
@@ -294,34 +323,18 @@
     { label: "HK",  lon: 114.17, lat: 22.32 }
   ];
 
-  /* 内嵌简化世界地图（fallback） */
+  /* ================= Fallback 简化世界地图 ================= */
   const FALLBACK_GEO = {
     type: "FeatureCollection",
     features: [
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [-168,65],[-160,71],[-130,70],[-95,72],[-80,68],[-60,58],[-55,48],[-70,42],[-80,26],[-98,18],[-115,30],[-125,40],[-140,58],[-168,65]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [-80,10],[-75,0],[-50,0],[-35,-6],[-38,-22],[-50,-30],[-58,-38],[-70,-55],[-75,-45],[-78,-25],[-80,10]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [-10,36],[-5,58],[10,70],[30,72],[60,75],[100,78],[140,72],[165,60],[145,45],[125,35],[115,15],[100,5],[80,8],[60,25],[45,40],[30,40],[15,38],[-10,36]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [-17,15],[-5,35],[10,37],[30,32],[43,12],[50,10],[42,-5],[38,-22],[25,-34],[12,-35],[0,-25],[-17,15]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [113,-22],[122,-17],[135,-12],[145,-15],[153,-25],[148,-38],[135,-35],[118,-35],[113,-22]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [-45,60],[-25,68],[-18,78],[-25,83],[-45,84],[-58,80],[-55,68],[-45,60]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [-5,50],[-3,58],[0,57],[1,51],[-5,50]
-      ]]}},
-      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
-        [130,32],[136,35],[141,40],[142,44],[139,42],[135,35],[130,32]
-      ]]}}
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[-168,65],[-160,71],[-130,70],[-95,72],[-80,68],[-60,58],[-55,48],[-70,42],[-80,26],[-98,18],[-115,30],[-125,40],[-140,58],[-168,65]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[-80,10],[-75,0],[-50,0],[-35,-6],[-38,-22],[-50,-30],[-58,-38],[-70,-55],[-75,-45],[-78,-25],[-80,10]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[-10,36],[-5,58],[10,70],[30,72],[60,75],[100,78],[140,72],[165,60],[145,45],[125,35],[115,15],[100,5],[80,8],[60,25],[45,40],[30,40],[15,38],[-10,36]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[-17,15],[-5,35],[10,37],[30,32],[43,12],[50,10],[42,-5],[38,-22],[25,-34],[12,-35],[0,-25],[-17,15]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[113,-22],[122,-17],[135,-12],[145,-15],[153,-25],[148,-38],[135,-35],[118,-35],[113,-22]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[-45,60],[-25,68],[-18,78],[-25,83],[-45,84],[-58,80],[-55,68],[-45,60]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[-5,50],[-3,58],[0,57],[1,51],[-5,50]]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[[130,32],[136,35],[141,40],[142,44],[139,42],[135,35],[130,32]]]}}
     ]
   };
 
@@ -330,38 +343,37 @@
   const TOTAL = 60000;
 
   const scenes = {
-    intro: document.getElementById('scene-intro'),
-    map: document.getElementById('scene-map'),
+    intro:   document.getElementById('scene-intro'),
+    map:     document.getElementById('scene-map'),
     feature: document.getElementById('scene-feature'),
-    ai: document.getElementById('scene-ai'),
-    summary: document.getElementById('scene-summary'),
-    outro: document.getElementById('scene-outro')
+    ai:      document.getElementById('scene-ai'),
+    summary: document.getElementById('scene-summary')
   };
 
-  const mapCanvas = document.getElementById('mapCanvas');
+  const mapCanvas  = document.getElementById('mapCanvas');
   const marketList = document.getElementById('marketList');
-  const marketNum = document.getElementById('marketNum');
-  const fGroup = document.getElementById('fGroup');
-  const fNo = document.getElementById('fNo');
-  const fName = document.getElementById('fName');
-  const fValue = document.getElementById('fValue');
+  const marketNum  = document.getElementById('marketNum');
+  const fGroup     = document.getElementById('fGroup');
+  const fNo        = document.getElementById('fNo');
+  const fName      = document.getElementById('fName');
+  const fValue     = document.getElementById('fValue');
   const gridMobile = document.getElementById('gridMobile');
-  const gridBrowser = document.getElementById('gridBrowser');
-  const progress = document.getElementById('progress');
-  const replay = document.getElementById('replay');
+  const gridBrowser= document.getElementById('gridBrowser');
+  const progress   = document.getElementById('progress');
+  const replay     = document.getElementById('replay');
 
   const MAP_W = 1000, MAP_H = 440;
 
+  /* ================= 地图 ================= */
   function renderMap() {
     if (!mapCanvas) return;
     mapCanvas.innerHTML = '';
 
-    const regions = [
+    [
       { name: "Americas", left: 18, top: 62 },
       { name: "EMEA",     left: 47, top: 84 },
       { name: "APAC",     left: 80, top: 22 }
-    ];
-    regions.forEach(r => {
+    ].forEach(r => {
       const d = document.createElement('div');
       d.className = 'region-tag';
       d.style.left = r.left + '%';
@@ -430,6 +442,7 @@
     tryUrl(0);
   }
 
+  /* ================= 通用 ================= */
   function clearAll() {
     timers.forEach(t => clearTimeout(t)); timers = [];
     if (raf) cancelAnimationFrame(raf); raf = null;
@@ -488,7 +501,7 @@
 
   function lightSummary() {
     document.querySelectorAll('.grid-card').forEach((c, i) => {
-      timers.push(setTimeout(() => c.classList.add('lit'), i * 110));
+      timers.push(setTimeout(() => c.classList.add('lit'), i * 100));
     });
   }
 
@@ -504,6 +517,13 @@
 
   function schedule(fn, ms) { timers.push(setTimeout(fn, ms)); }
 
+  /* ================= 时间线 =================
+     0–4s   Intro
+     4–12s  Market
+     12–42s Feature（15 × 2s）
+     42–50s Super AI
+     50–60s Summary（最后停留）
+  =========================================== */
   function play() {
     clearAll();
     replay.style.display = 'none';
@@ -531,12 +551,16 @@
     schedule(() => {
       showScene('feature');
       setFeature(0);
-      for (let i = 1; i < FEATURES.length; i++) schedule(() => setFeature(i), i * 3000);
+      for (let i = 1; i < FEATURES.length; i++) schedule(() => setFeature(i), i * 2000);
     }, 12000);
 
     schedule(() => showScene('ai'), 42000);
-    schedule(() => { showScene('summary'); lightSummary(); }, 50000);
-    schedule(() => showScene('outro'), 57000);
+
+    schedule(() => {
+      showScene('summary');
+      lightSummary();
+    }, 50000);
+
     schedule(() => { replay.style.display = 'block'; }, 60000);
   }
 

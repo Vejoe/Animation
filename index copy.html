@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>DSP3 60s Demo — HK Market</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e9e6df; color: #111;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  #stage {
+    position: relative; width: 1280px; height: 720px;
+    background: #f7f5f0; overflow: hidden; border-radius: 10px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.18);
+  }
+  #progress {
+    position: absolute; left: 0; top: 0; height: 2px; width: 0%;
+    background: #c8452d; z-index: 99;
+  }
+  .scene {
+    position: absolute; inset: 0; opacity: 0; visibility: hidden;
+    transition: opacity .6s ease;
+    display: flex; flex-direction: column; padding: 64px 72px;
+  }
+  .scene.active { opacity: 1; visibility: visible; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: #8a857c; margin-bottom: 36px;
+  }
+  .topbar .brand {
+    color: #111; font-family: Georgia, serif;
+    font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: none;
+  }
+
+  #scene-intro { justify-content: center; }
+  .intro-brand {
+    font-family: Georgia, serif; font-size: 72px; font-weight: 700;
+    letter-spacing: 2px; line-height: 1; margin-bottom: 18px;
+    animation: rise .8s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .kicker {
+    font-size: 13px; letter-spacing: 4px; text-transform: uppercase;
+    color: #c8452d; margin-bottom: 22px;
+  }
+  .big-title {
+    font-family: Georgia, serif; font-size: 108px; line-height: .95;
+    font-weight: 400; letter-spacing: -2px;
+    animation: rise .9s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .big-title em { font-style: italic; color: #c8452d; }
+  @keyframes rise { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .intro-sub {
+    margin-top: 26px; font-size: 17px; color: #6f6a61;
+    max-width: 560px; line-height: 1.7;
+  }
+
+  .map-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+  .map-head h2 {
+    font-family: Georgia, serif; font-weight: 400;
+    font-size: 46px; letter-spacing: -1px; line-height: 1.05;
+  }
+  .map-head .count { text-align: right; }
+  .map-head .count .num { font-family: Georgia, serif; font-size: 72px; line-height: 1; color: #c8452d; }
+  .map-head .count .label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #8a857c; }
+
+  .map-box {
+    position: relative; flex: 1; border: 1px solid #ddd8ce;
+    background: #f1eee7; overflow: hidden;
+  }
+  .map-canvas { position: absolute; inset: 0; }
+  .map-canvas svg { display: block; width: 100%; height: 100%; }
+  .map-points-layer { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+
+  .region-tag {
+    position: absolute; transform: translate(-50%, -50%);
+    font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+    color: #c9c3b8; font-weight: 600; pointer-events: none;
+    white-space: nowrap; z-index: 1;
+  }
+
+  .point {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: #d3cdc1; transform: translate(-50%, -50%);
+    transition: all .35s ease;
+  }
+  .point.lit {
+    background: #c8452d;
+    box-shadow: 0 0 0 4px rgba(200,69,45,.14);
+  }
+  .point.lit::after {
+    content: ""; position: absolute; inset: -5px; border-radius: 50%;
+    border: 1px solid rgba(200,69,45,.5); animation: ripple 2s ease-out infinite;
+  }
+  @keyframes ripple {
+    0% { transform: scale(.55); opacity: .9; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .point .tag {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 10px; letter-spacing: 1px; color: #8a857c;
+    white-space: nowrap; opacity: 0; transition: opacity .3s ease;
+  }
+  .point.lit .tag { opacity: 1; color: #c8452d; font-weight: 600; }
+
+  .market-list {
+    position: absolute; left: 18px; bottom: 18px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+    max-width: 300px; z-index: 4;
+  }
+  .market-list span {
+    font-size: 10px; letter-spacing: 1.5px; padding: 4px 9px;
+    border: 1px solid #ddd8ce; color: #b8b2a8;
+    background: rgba(247,245,240,.92); transition: all .35s ease;
+  }
+  .market-list span.lit { color: #fff; background: #c8452d; border-color: #c8452d; }
+
+  .feature-wrap { flex: 1; display: flex; gap: 44px; min-height: 0; }
+  .feature-left { width: 340px; display: flex; flex-direction: column; flex-shrink: 0; }
+  .feature-group {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: #c8452d; margin-bottom: 4px;
+  }
+  .feature-no { font-family: Georgia, serif; font-size: 88px; line-height: 1; color: #c8452d; }
+  .feature-name {
+    font-family: Georgia, serif; font-size: 34px; line-height: 1.12;
+    margin-top: 4px; letter-spacing: -0.5px;
+  }
+  .feature-value {
+    margin-top: 18px; font-size: 15px; line-height: 1.7; color: #6f6a61;
+    padding-top: 16px; border-top: 1px solid #ddd8ce;
+  }
+  .feature-right { flex: 1; display: flex; min-width: 0; }
+  .demo-box {
+    position: relative; flex: 1;
+    background: #efece5; border: 1px solid #ddd8ce; overflow: hidden;
+  }
+  .demo-box .demo-inner {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #a49e93;
+  }
+  .demo-box::after {
+    content: ""; position: absolute; top: 0; left: -30%; width: 30%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.8), transparent);
+    animation: sweep 2.4s ease-in-out infinite;
+  }
+  @keyframes sweep { 0% { left: -30%; } 65%, 100% { left: 130%; } }
+
+  #scene-ai { justify-content: center; }
+  .ai-kicker { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #c8452d; margin-bottom: 20px; }
+  .ai-title { font-family: Georgia, serif; font-weight: 400; font-size: 130px; line-height: .9; letter-spacing: -3px; }
+  .ai-title em { font-style: italic; color: #c8452d; }
+  .ai-words {
+    margin-top: 34px; display: flex; gap: 40px;
+    font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: #6f6a61;
+  }
+  .ai-words span::before { content: "— "; color: #c8452d; }
+  .ai-line {
+    position: absolute; left: 72px; right: 72px; bottom: 90px; height: 1px;
+    background: #ddd8ce; overflow: hidden;
+  }
+  .ai-line::after {
+    content: ""; position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
+    background: #c8452d; animation: slide 2.2s ease-in-out infinite;
+  }
+  @keyframes slide { 0% { left: -40%; } 65%, 100% { left: 100%; } }
+
+  .summary-title { font-family: Georgia, serif; font-weight: 400; font-size: 44px; letter-spacing: -1px; margin-bottom: 6px; }
+  .summary-sub { font-size: 13px; color: #8a857c; margin-bottom: 28px; letter-spacing: .5px; }
+  .grid-wrap { display: flex; flex-direction: column; gap: 18px; }
+  .grid-row-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #c8452d; margin-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: #ddd8ce; border: 1px solid #ddd8ce; }
+  .grid-card {
+    background: #f7f5f0; padding: 20px 16px; min-height: 100px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    opacity: .32; transition: all .4s ease;
+  }
+  .grid-card .g-no { font-size: 10px; letter-spacing: 2px; color: #c8452d; }
+  .grid-card .g-name { font-family: Georgia, serif; font-size: 15px; color: #111; line-height: 1.25; }
+  .grid-card.lit { opacity: 1; background: #fffdf8; }
+
+  .summary-line { margin-top: 28px; font-size: 15px; color: #6f6a61; display: flex; gap: 10px; align-items: baseline; }
+  .summary-line b { font-family: Georgia, serif; font-size: 24px; color: #c8452d; font-weight: 400; }
+
+  #scene-outro { justify-content: center; }
+  .outro-logo { font-family: Georgia, serif; font-size: 150px; letter-spacing: -4px; line-height: 1; }
+  .outro-logo em { font-style: italic; color: #c8452d; }
+  .outro-sub { margin-top: 18px; font-size: 15px; letter-spacing: 4px; text-transform: uppercase; color: #8a857c; }
+
+  #replay {
+    position: absolute; right: 24px; bottom: 20px; z-index: 100;
+    background: transparent; color: #111; border: 1px solid #111;
+    padding: 8px 16px; border-radius: 0; cursor: pointer;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase; display: none;
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="progress"></div>
+
+  <section class="scene active" id="scene-intro">
+    <div class="intro-brand">DSP3</div>
+    <div class="kicker">2026 Review</div>
+    <h1 class="big-title">Built for<br><em>what's next.</em></h1>
+    <p class="intro-sub">A year of shipping features across mobile and browser, expanding markets, and pushing Super AI further.</p>
+  </section>
+
+  <section class="scene" id="scene-map">
+    <div class="topbar"><span class="brand">DSP3</span><span>Market Coverage</span></div>
+    <div class="map-head">
+      <h2>On board,<br><em style="font-style:italic;color:#c8452d;">market by market.</em></h2>
+      <div class="count"><div class="num" id="marketNum">0</div><div class="label">Markets</div></div>
+    </div>
+    <div class="map-box">
+      <div class="map-canvas" id="mapCanvas"></div>
+      <div class="market-list" id="marketList"></div>
+    </div>
+  </section>
+
+  <section class="scene" id="scene-feature">
+    <div class="topbar"><span class="brand">DSP3</span><span>Feature Highlights</span></div>
+    <div class="feature-wrap">
+      <div class="feature-left">
+        <div class="feature-group" id="fGroup">Mobile</div>
+        <div class="feature-no" id="fNo">01</div>
+        <div class="feature-name" id="fName">Feature Name</div>
+        <div class="feature-value" id="fValue">Faster, safer, and simpler for every user.</div>
+      </div>
+      <div class="feature-right">
+        <div class="demo-box"><div class="demo-inner">Feature Demo Video</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="scene-ai">
+    <div class="ai-kicker">Introducing</div>
+    <div class="ai-title">Super <em>AI</em></div>
+    <div class="ai-words"><span>Faster</span><span>Smarter</span><span>Automated</span></div>
+    <div class="ai-line"></div>
+  </section>
+
+  <section class="scene" id="scene-summary">
+    <div class="topbar"><span class="brand">DSP3</span><span>Year in Review</span></div>
+    <div class="summary-title">Everything, in one place.</div>
+    <div class="summary-sub">10 features · 8 markets · one DSP3</div>
+    <div class="grid-wrap">
+      <div><div class="grid-row-label">Mobile</div><div class="grid" id="gridMobile"></div></div>
+      <div><div class="grid-row-label">Browser</div><div class="grid" id="gridBrowser"></div></div>
+    </div>
+    <div class="summary-line"><b>10</b> Features &nbsp;·&nbsp; <b>8</b> Markets &nbsp;·&nbsp; <b>1</b> DSP3</div>
+  </section>
+
+  <section class="scene" id="scene-outro">
+    <div class="outro-logo">DSP<em>3</em></div>
+    <div class="outro-sub">Let growth continue</div>
+  </section>
+
+  <button id="replay">Replay</button>
+</div>
+
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+
+<script>
+  const FEATURES = [
+    { group: "Mobile",  name: "Mobile Device Setup", value: "Guided setup that gets devices ready in minutes." },
+    { group: "Mobile",  name: "Mobile Login", value: "Fast, secure sign-in on every mobile device." },
+    { group: "Mobile",  name: "Mobile Manage Security", value: "Full control over security settings, in-app." },
+    { group: "Mobile",  name: "Mobile Change PIN", value: "Self-service PIN changes, no support call needed." },
+    { group: "Mobile",  name: "Mobile ITS / Reauth", value: "Step-up verification when it matters most." },
+    { group: "Mobile",  name: "Global Account Linkage", value: "Link accounts across markets in one flow." },
+    { group: "Browser", name: "Browser Logon", value: "A seamless web sign-in experience." },
+    { group: "Browser", name: "Browser Manage Security", value: "Manage security preferences from the browser." },
+    { group: "Browser", name: "Browser Global Account Linkage", value: "Connect global accounts from the web." },
+    { group: "Browser", name: "Browser TDS/Reauth", value: "Browser-side reauthentication, done right." }
+  ];
+  const MOBILE_FEATURES = FEATURES.filter(f => f.group === "Mobile");
+  const BROWSER_FEATURES = FEATURES.filter(f => f.group === "Browser");
+
+  /* 市场：UK → CN → US → UAE → JE → MY → IN → HK */
+  const MARKETS = [
+    { label: "UK",  lon: -3.44,  lat: 55.38 },
+    { label: "CN",  lon: 104.20, lat: 35.86 },
+    { label: "US",  lon: -95.71, lat: 37.09 },
+    { label: "UAE", lon: 53.85,  lat: 23.42 },
+    { label: "JE",  lon: -2.13,  lat: 49.21 },
+    { label: "MY",  lon: 101.98, lat: 4.21 },
+    { label: "IN",  lon: 78.96,  lat: 20.59 },
+    { label: "HK",  lon: 114.17, lat: 22.32 }
+  ];
+
+  /* 内嵌简化世界地图（fallback） */
+  const FALLBACK_GEO = {
+    type: "FeatureCollection",
+    features: [
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [-168,65],[-160,71],[-130,70],[-95,72],[-80,68],[-60,58],[-55,48],[-70,42],[-80,26],[-98,18],[-115,30],[-125,40],[-140,58],[-168,65]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [-80,10],[-75,0],[-50,0],[-35,-6],[-38,-22],[-50,-30],[-58,-38],[-70,-55],[-75,-45],[-78,-25],[-80,10]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [-10,36],[-5,58],[10,70],[30,72],[60,75],[100,78],[140,72],[165,60],[145,45],[125,35],[115,15],[100,5],[80,8],[60,25],[45,40],[30,40],[15,38],[-10,36]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [-17,15],[-5,35],[10,37],[30,32],[43,12],[50,10],[42,-5],[38,-22],[25,-34],[12,-35],[0,-25],[-17,15]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [113,-22],[122,-17],[135,-12],[145,-15],[153,-25],[148,-38],[135,-35],[118,-35],[113,-22]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [-45,60],[-25,68],[-18,78],[-25,83],[-45,84],[-58,80],[-55,68],[-45,60]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [-5,50],[-3,58],[0,57],[1,51],[-5,50]
+      ]]}},
+      { type:"Feature", geometry:{ type:"Polygon", coordinates:[[
+        [130,32],[136,35],[141,40],[142,44],[139,42],[135,35],[130,32]
+      ]]}}
+    ]
+  };
+
+  let mapData = FALLBACK_GEO;
+  let timers = [], raf = null, startTime = 0;
+  const TOTAL = 60000;
+
+  const scenes = {
+    intro: document.getElementById('scene-intro'),
+    map: document.getElementById('scene-map'),
+    feature: document.getElementById('scene-feature'),
+    ai: document.getElementById('scene-ai'),
+    summary: document.getElementById('scene-summary'),
+    outro: document.getElementById('scene-outro')
+  };
+
+  const mapCanvas = document.getElementById('mapCanvas');
+  const marketList = document.getElementById('marketList');
+  const marketNum = document.getElementById('marketNum');
+  const fGroup = document.getElementById('fGroup');
+  const fNo = document.getElementById('fNo');
+  const fName = document.getElementById('fName');
+  const fValue = document.getElementById('fValue');
+  const gridMobile = document.getElementById('gridMobile');
+  const gridBrowser = document.getElementById('gridBrowser');
+  const progress = document.getElementById('progress');
+  const replay = document.getElementById('replay');
+
+  const MAP_W = 1000, MAP_H = 440;
+
+  function renderMap() {
+    if (!mapCanvas) return;
+    mapCanvas.innerHTML = '';
+
+    const regions = [
+      { name: "Americas", left: 18, top: 62 },
+      { name: "EMEA",     left: 47, top: 84 },
+      { name: "APAC",     left: 80, top: 22 }
+    ];
+    regions.forEach(r => {
+      const d = document.createElement('div');
+      d.className = 'region-tag';
+      d.style.left = r.left + '%';
+      d.style.top = r.top + '%';
+      d.textContent = r.name;
+      mapCanvas.appendChild(d);
+    });
+
+    const svg = d3.select(mapCanvas).append('svg')
+      .attr('viewBox', `0 0 ${MAP_W} ${MAP_H}`)
+      .attr('preserveAspectRatio', 'none');
+
+    const projection = d3.geoNaturalEarth1().fitSize([MAP_W, MAP_H], mapData);
+    const path = d3.geoPath().projection(projection);
+
+    svg.append('g')
+      .selectAll('path')
+      .data(mapData.features)
+      .join('path')
+      .attr('d', path)
+      .attr('fill', '#e3ded2')
+      .attr('stroke', '#cfc8ba')
+      .attr('stroke-width', 0.8)
+      .attr('stroke-linejoin', 'round')
+      .attr('vector-effect', 'non-scaling-stroke');
+
+    const layer = document.createElement('div');
+    layer.className = 'map-points-layer';
+    mapCanvas.appendChild(layer);
+
+    MARKETS.forEach((m, i) => {
+      const pr = projection([m.lon, m.lat]);
+      if (!pr) return;
+      const [x, y] = pr;
+      const p = document.createElement('div');
+      p.className = 'point';
+      p.style.left = (x / MAP_W * 100) + '%';
+      p.style.top  = (y / MAP_H * 100) + '%';
+      p.dataset.index = i;
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.textContent = m.label;
+      p.appendChild(tag);
+      layer.appendChild(p);
+    });
+  }
+
+  function loadAtlas() {
+    const urls = [
+      'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json',
+      'https://unpkg.com/world-atlas@2.0.2/countries-110m.json'
+    ];
+    function tryUrl(i) {
+      if (i >= urls.length) return;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 4000);
+      fetch(urls[i], { signal: ctrl.signal })
+        .then(r => { if (!r.ok) throw new Error('bad'); return r.json(); })
+        .then(topo => {
+          clearTimeout(timer);
+          mapData = topojson.feature(topo, topo.objects.countries);
+          renderMap();
+        })
+        .catch(() => { clearTimeout(timer); tryUrl(i + 1); });
+    }
+    tryUrl(0);
+  }
+
+  function clearAll() {
+    timers.forEach(t => clearTimeout(t)); timers = [];
+    if (raf) cancelAnimationFrame(raf); raf = null;
+    document.querySelectorAll('.point').forEach(p => p.classList.remove('lit'));
+    document.querySelectorAll('.grid-card').forEach(c => c.classList.remove('lit'));
+    document.querySelectorAll('.market-list span').forEach(s => s.classList.remove('lit'));
+  }
+
+  function showScene(key) {
+    Object.values(scenes).forEach(s => s.classList.remove('active'));
+    scenes[key].classList.add('active');
+  }
+
+  function buildMarketList() {
+    marketList.innerHTML = '';
+    MARKETS.forEach(m => {
+      const s = document.createElement('span');
+      s.textContent = m.label;
+      s.dataset.code = m.label;
+      marketList.appendChild(s);
+    });
+  }
+
+  function lightMapInOrder(stagger = 600) {
+    const points = mapCanvas.querySelectorAll('.point');
+    points.forEach((p, i) => {
+      timers.push(setTimeout(() => p.classList.add('lit'), i * stagger));
+      timers.push(setTimeout(() => {
+        const item = marketList.querySelector(`[data-code="${MARKETS[i].label}"]`);
+        if (item) item.classList.add('lit');
+      }, i * stagger + 120));
+    });
+  }
+
+  function setFeature(index) {
+    const f = FEATURES[index];
+    fGroup.textContent = f.group;
+    fNo.textContent = String(index + 1).padStart(2, '0');
+    fName.textContent = f.name;
+    fValue.textContent = f.value;
+  }
+
+  function buildSummary() {
+    function fill(container, list, offset) {
+      container.innerHTML = '';
+      list.forEach((f, i) => {
+        const d = document.createElement('div');
+        d.className = 'grid-card';
+        d.innerHTML = `<div class="g-no">${String(offset + i + 1).padStart(2, '0')}</div><div class="g-name">${f.name.replace(/^(Mobile|Browser) /, '')}</div>`;
+        container.appendChild(d);
+      });
+    }
+    fill(gridMobile, MOBILE_FEATURES, 0);
+    fill(gridBrowser, BROWSER_FEATURES, MOBILE_FEATURES.length);
+  }
+
+  function lightSummary() {
+    document.querySelectorAll('.grid-card').forEach((c, i) => {
+      timers.push(setTimeout(() => c.classList.add('lit'), i * 110));
+    });
+  }
+
+  function animateProgress() {
+    startTime = performance.now();
+    function tick(now) {
+      const p = Math.min((now - startTime) / TOTAL, 1);
+      progress.style.width = (p * 100) + '%';
+      if (p < 1) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  function schedule(fn, ms) { timers.push(setTimeout(fn, ms)); }
+
+  function play() {
+    clearAll();
+    replay.style.display = 'none';
+    progress.style.width = '0%';
+
+    renderMap();
+    buildMarketList();
+    buildSummary();
+
+    showScene('intro');
+    animateProgress();
+
+    schedule(() => {
+      showScene('map');
+      marketNum.textContent = '0';
+      lightMapInOrder(600);
+      let n = 0;
+      const counter = setInterval(() => {
+        n++; marketNum.textContent = n;
+        if (n >= MARKETS.length) clearInterval(counter);
+      }, 600);
+      timers.push(counter);
+    }, 4000);
+
+    schedule(() => {
+      showScene('feature');
+      setFeature(0);
+      for (let i = 1; i < FEATURES.length; i++) schedule(() => setFeature(i), i * 3000);
+    }, 12000);
+
+    schedule(() => showScene('ai'), 42000);
+    schedule(() => { showScene('summary'); lightSummary(); }, 50000);
+    schedule(() => showScene('outro'), 57000);
+    schedule(() => { replay.style.display = 'block'; }, 60000);
+  }
+
+  replay.addEventListener('click', play);
+
+  if (typeof d3 === 'undefined' || typeof topojson === 'undefined') {
+    play();
+  } else {
+    renderMap();
+    play();
+    loadAtlas();
+  }
+</script>
+</body>
+</html>
