@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>DSP3 60s Demo — 10 Demos + 15 Feature Summary</title>
+<title>DSP3 60s Demo — HSBC Co-branded v5</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -18,42 +18,73 @@
   }
   #progress {
     position: absolute; left: 0; top: 0; height: 2px; width: 0%;
-    background: #c8452d; z-index: 99;
+    background: #DB0011; z-index: 99;
   }
   .scene {
     position: absolute; inset: 0; opacity: 0; visibility: hidden;
     transition: opacity .6s ease;
-    display: flex; flex-direction: column; padding: 56px 72px;
+    display: flex; flex-direction: column; padding: 52px 72px 56px;
   }
   .scene.active { opacity: 1; visibility: visible; }
 
+  /* ---------- 统一顶栏 ---------- */
   .topbar {
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
-    color: #8a857c; margin-bottom: 32px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 40px;
+    flex-shrink: 0;
   }
-  .topbar .brand {
-    color: #111; font-family: Georgia, serif;
-    font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: none;
+  .brand-stack {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    margin-left: -16px;
+  }
+  .hsbc-logo {
+    display: block; height: 34px; width: auto;
+  }
+
+  /* DSP3 作为 project 标签，跟 logo 明显分开 */
+  .project-label {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 22px;
+    margin-left: 4px;
+  }
+  .project-label .rule {
+    width: 18px; height: 2px;
+    background: #DB0011;
+    flex-shrink: 0;
+  }
+  .project-label .name {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 5px;
+    line-height: 1;
+    color: #6f6a61;
+    text-transform: uppercase;
+  }
+
+  .scene-label {
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: #8a857c; padding-top: 12px;
   }
 
   /* ---------- Intro ---------- */
-  #scene-intro { justify-content: center; padding: 64px 72px; }
-  .intro-brand {
-    font-family: Georgia, serif; font-size: 72px; font-weight: 700;
-    letter-spacing: 2px; line-height: 1; margin-bottom: 18px;
-    animation: rise .8s cubic-bezier(.2,.7,.2,1) both;
+  .intro-content {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    max-width: 100%;
   }
   .kicker {
     font-size: 13px; letter-spacing: 4px; text-transform: uppercase;
-    color: #c8452d; margin-bottom: 22px;
+    color: #DB0011; margin-bottom: 22px;
   }
   .big-title {
     font-family: Georgia, serif; font-size: 108px; line-height: .95;
     font-weight: 400; letter-spacing: -2px;
     animation: rise .9s cubic-bezier(.2,.7,.2,1) both;
   }
-  .big-title em { font-style: italic; color: #c8452d; }
+  .big-title em { font-style: italic; color: #DB0011; }
   @keyframes rise { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .intro-sub {
     margin-top: 26px; font-size: 17px; color: #6f6a61;
@@ -67,7 +98,7 @@
     font-size: 46px; letter-spacing: -1px; line-height: 1.05;
   }
   .map-head .count { text-align: right; }
-  .map-head .count .num { font-family: Georgia, serif; font-size: 72px; line-height: 1; color: #c8452d; }
+  .map-head .count .num { font-family: Georgia, serif; font-size: 72px; line-height: 1; color: #DB0011; }
   .map-head .count .label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #8a857c; }
 
   .map-box {
@@ -91,12 +122,12 @@
     transition: all .35s ease;
   }
   .point.lit {
-    background: #c8452d;
-    box-shadow: 0 0 0 4px rgba(200,69,45,.14);
+    background: #DB0011;
+    box-shadow: 0 0 0 4px rgba(219,0,17,.14);
   }
   .point.lit::after {
     content: ""; position: absolute; inset: -5px; border-radius: 50%;
-    border: 1px solid rgba(200,69,45,.5); animation: ripple 2s ease-out infinite;
+    border: 1px solid rgba(219,0,17,.5); animation: ripple 2s ease-out infinite;
   }
   @keyframes ripple {
     0% { transform: scale(.55); opacity: .9; }
@@ -107,7 +138,7 @@
     font-size: 10px; letter-spacing: 1px; color: #8a857c;
     white-space: nowrap; opacity: 0; transition: opacity .3s ease;
   }
-  .point.lit .tag { opacity: 1; color: #c8452d; font-weight: 600; }
+  .point.lit .tag { opacity: 1; color: #DB0011; font-weight: 600; }
 
   .market-list {
     position: absolute; left: 18px; bottom: 18px;
@@ -119,16 +150,24 @@
     border: 1px solid #ddd8ce; color: #b8b2a8;
     background: rgba(247,245,240,.92); transition: all .35s ease;
   }
-  .market-list span.lit { color: #fff; background: #c8452d; border-color: #c8452d; }
+  .market-list span.lit { color: #fff; background: #DB0011; border-color: #DB0011; }
 
-  /* ---------- Feature（10 个 demo 快闪） ---------- */
+  /* ---------- Feature ---------- */
   .feature-wrap { flex: 1; display: flex; gap: 44px; min-height: 0; }
-  .feature-left { width: 340px; display: flex; flex-direction: column; flex-shrink: 0; justify-content: center; }
+
+  /* 左侧文案整体上提 */
+  .feature-left {
+    width: 340px;
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    transform: translateY(-44px);
+  }
   .feature-group {
     font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-    color: #c8452d; margin-bottom: 4px;
+    color: #DB0011; margin-bottom: 4px;
   }
-  .feature-no { font-family: Georgia, serif; font-size: 88px; line-height: 1; color: #c8452d; }
+  .feature-no { font-family: Georgia, serif; font-size: 88px; line-height: 1; color: #DB0011; }
   .feature-name {
     font-family: Georgia, serif; font-size: 34px; line-height: 1.12;
     margin-top: 4px; letter-spacing: -0.5px;
@@ -137,6 +176,7 @@
     margin-top: 18px; font-size: 15px; line-height: 1.7; color: #6f6a61;
     padding-top: 16px; border-top: 1px solid #ddd8ce;
   }
+
   .feature-right { flex: 1; display: flex; min-width: 0; }
   .demo-box {
     position: relative; flex: 1;
@@ -154,26 +194,28 @@
   @keyframes sweep { 0% { left: -30%; } 65%, 100% { left: 130%; } }
 
   /* ---------- AI ---------- */
-  #scene-ai { justify-content: center; padding: 64px 72px; }
-  .ai-kicker { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #c8452d; margin-bottom: 20px; }
+  #scene-ai .ai-content {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+  }
+  .ai-kicker { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #DB0011; margin-bottom: 20px; }
   .ai-title { font-family: Georgia, serif; font-weight: 400; font-size: 130px; line-height: .9; letter-spacing: -3px; }
-  .ai-title em { font-style: italic; color: #c8452d; }
+  .ai-title em { font-style: italic; color: #DB0011; }
   .ai-words {
     margin-top: 34px; display: flex; gap: 40px;
     font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: #6f6a61;
   }
-  .ai-words span::before { content: "— "; color: #c8452d; }
+  .ai-words span::before { content: "— "; color: #DB0011; }
   .ai-line {
-    position: absolute; left: 72px; right: 72px; bottom: 90px; height: 1px;
+    position: absolute; left: 72px; right: 72px; bottom: 70px; height: 1px;
     background: #ddd8ce; overflow: hidden;
   }
   .ai-line::after {
     content: ""; position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
-    background: #c8452d; animation: slide 2.2s ease-in-out infinite;
+    background: #DB0011; animation: slide 2.2s ease-in-out infinite;
   }
   @keyframes slide { 0% { left: -40%; } 65%, 100% { left: 100%; } }
 
-  /* ---------- Summary（15 features，最后画面） ---------- */
+  /* ---------- Summary ---------- */
   .summary-title {
     font-family: Georgia, serif; font-weight: 400;
     font-size: 40px; letter-spacing: -1px; margin-bottom: 4px;
@@ -182,7 +224,7 @@
   .grid-wrap { display: flex; flex-direction: column; gap: 12px; }
   .grid-row-label {
     font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-    color: #c8452d; margin-bottom: 5px;
+    color: #DB0011; margin-bottom: 5px;
   }
   .grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -194,7 +236,7 @@
     display: flex; flex-direction: column; justify-content: space-between;
     opacity: .3; transition: all .4s ease;
   }
-  .grid-card .g-no { font-size: 9px; letter-spacing: 2px; color: #c8452d; }
+  .grid-card .g-no { font-size: 9px; letter-spacing: 2px; color: #DB0011; }
   .grid-card .g-name {
     font-family: Georgia, serif; font-size: 12px; color: #111;
     line-height: 1.22;
@@ -204,7 +246,7 @@
     margin-top: 16px; font-size: 14px; color: #6f6a61;
     display: flex; gap: 10px; align-items: baseline;
   }
-  .summary-line b { font-family: Georgia, serif; font-size: 22px; color: #c8452d; font-weight: 400; }
+  .summary-line b { font-family: Georgia, serif; font-size: 22px; color: #DB0011; font-weight: 400; }
 
   #replay {
     position: absolute; right: 24px; bottom: 20px; z-index: 100;
@@ -220,17 +262,41 @@
 
   <!-- 1. Intro -->
   <section class="scene active" id="scene-intro">
-    <div class="intro-brand">DSP3</div>
-    <div class="kicker">2026 Review</div>
-    <h1 class="big-title">Built for<br><em>what's next.</em></h1>
-    <p class="intro-sub">A year of shipping features across mobile and browser, expanding markets, and pushing Super AI further.</p>
+    <div class="topbar">
+      <div class="brand-stack">
+        <img class="hsbc-logo" src="https://www.hsbc.com.hk/content/dam/hsbc/hk/images/hongkong-hsbc-logo-en.svg" alt="HSBC"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span style="display:none; font-family:Georgia,serif; font-weight:700; font-size:22px;">HSBC</span>
+        <div class="project-label">
+          <span class="rule"></span>
+          <span class="name">DSP3</span>
+        </div>
+      </div>
+      <span class="scene-label">2026 Review</span>
+    </div>
+    <div class="intro-content">
+      <div class="kicker">Built for what's next</div>
+      <h1 class="big-title">A year of<br><em>shipping forward.</em></h1>
+      <p class="intro-sub">Features across mobile and browser, expanding markets, and pushing Super AI further.</p>
+    </div>
   </section>
 
   <!-- 2. Market -->
   <section class="scene" id="scene-map">
-    <div class="topbar"><span class="brand">DSP3</span><span>Market Coverage</span></div>
+    <div class="topbar">
+      <div class="brand-stack">
+        <img class="hsbc-logo" src="https://www.hsbc.com.hk/content/dam/hsbc/hk/images/hongkong-hsbc-logo-en.svg" alt="HSBC"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span style="display:none; font-family:Georgia,serif; font-weight:700; font-size:22px;">HSBC</span>
+        <div class="project-label">
+          <span class="rule"></span>
+          <span class="name">DSP3</span>
+        </div>
+      </div>
+      <span class="scene-label">Market Coverage</span>
+    </div>
     <div class="map-head">
-      <h2>On board,<br><em style="font-style:italic;color:#c8452d;">market by market.</em></h2>
+      <h2>On board,<br><em style="font-style:italic;color:#DB0011;">market by market.</em></h2>
       <div class="count"><div class="num" id="marketNum">0</div><div class="label">Markets</div></div>
     </div>
     <div class="map-box">
@@ -239,9 +305,20 @@
     </div>
   </section>
 
-  <!-- 3. Feature（10 个 demo） -->
+  <!-- 3. Feature -->
   <section class="scene" id="scene-feature">
-    <div class="topbar"><span class="brand">DSP3</span><span>Feature Highlights</span></div>
+    <div class="topbar">
+      <div class="brand-stack">
+        <img class="hsbc-logo" src="https://www.hsbc.com.hk/content/dam/hsbc/hk/images/hongkong-hsbc-logo-en.svg" alt="HSBC"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span style="display:none; font-family:Georgia,serif; font-weight:700; font-size:22px;">HSBC</span>
+        <div class="project-label">
+          <span class="rule"></span>
+          <span class="name">DSP3</span>
+        </div>
+      </div>
+      <span class="scene-label">Feature Highlights</span>
+    </div>
     <div class="feature-wrap">
       <div class="feature-left">
         <div class="feature-group" id="fGroup">Mobile</div>
@@ -257,15 +334,40 @@
 
   <!-- 4. AI -->
   <section class="scene" id="scene-ai">
-    <div class="ai-kicker">Introducing</div>
-    <div class="ai-title">Super <em>AI</em></div>
-    <div class="ai-words"><span>Faster</span><span>Smarter</span><span>Automated</span></div>
+    <div class="topbar">
+      <div class="brand-stack">
+        <img class="hsbc-logo" src="https://www.hsbc.com.hk/content/dam/hsbc/hk/images/hongkong-hsbc-logo-en.svg" alt="HSBC"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span style="display:none; font-family:Georgia,serif; font-weight:700; font-size:22px;">HSBC</span>
+        <div class="project-label">
+          <span class="rule"></span>
+          <span class="name">DSP3</span>
+        </div>
+      </div>
+      <span class="scene-label">Super AI</span>
+    </div>
+    <div class="ai-content">
+      <div class="ai-kicker">Introducing</div>
+      <div class="ai-title">Super <em>AI</em></div>
+      <div class="ai-words"><span>Faster</span><span>Smarter</span><span>Automated</span></div>
+    </div>
     <div class="ai-line"></div>
   </section>
 
-  <!-- 5. Summary（15 features，最后画面） -->
+  <!-- 5. Summary -->
   <section class="scene" id="scene-summary">
-    <div class="topbar"><span class="brand">DSP3</span><span>Year in Review</span></div>
+    <div class="topbar">
+      <div class="brand-stack">
+        <img class="hsbc-logo" src="https://www.hsbc.com.hk/content/dam/hsbc/hk/images/hongkong-hsbc-logo-en.svg" alt="HSBC"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span style="display:none; font-family:Georgia,serif; font-weight:700; font-size:22px;">HSBC</span>
+        <div class="project-label">
+          <span class="rule"></span>
+          <span class="name">DSP3</span>
+        </div>
+      </div>
+      <span class="scene-label">Year in Review</span>
+    </div>
     <div class="summary-title">Everything, in one place.</div>
     <div class="summary-sub">15 features · 8 markets · one DSP3</div>
     <div class="grid-wrap">
@@ -288,9 +390,6 @@
 <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
 <script>
-  /* =========================================================
-     1) 快闪段：10 个 demo 功能（每个 3 秒）
-     ========================================================= */
   const DEMO_FEATURES = [
     { group: "Mobile",  name: "Mobile Device Setup",            value: "Guided setup that gets devices ready in minutes." },
     { group: "Mobile",  name: "Mobile Login",                   value: "Fast, secure sign-in on every mobile device." },
@@ -304,9 +403,6 @@
     { group: "Browser", name: "Browser TDS/Reauth",             value: "Browser-side reauthentication, done right." }
   ];
 
-  /* =========================================================
-     2) 总结页：全部 15 个 features
-     ========================================================= */
   const SUMMARY_MOBILE = [
     "Device Setup",
     "Mobile Login",
@@ -318,7 +414,6 @@
     "Device Switch",
     "IAuth Integration"
   ];
-
   const SUMMARY_BROWSER = [
     "Browser Logon (Hardtoken & Mobile Approve)",
     "Manage Security (browser)",
@@ -328,9 +423,6 @@
     "OpenBanking AIS/PIS (browser)"
   ];
 
-  /* =========================================================
-     3) 市场
-     ========================================================= */
   const MARKETS = [
     { label: "UK",  lon: -3.44,  lat: 55.38 },
     { label: "CN",  lon: 104.20, lat: 35.86 },
@@ -342,9 +434,6 @@
     { label: "HK",  lon: 114.17, lat: 22.32 }
   ];
 
-  /* =========================================================
-     4) Fallback 简化世界地图
-     ========================================================= */
   const FALLBACK_GEO = {
     type: "FeatureCollection",
     features: [
@@ -385,7 +474,6 @@
 
   const MAP_W = 1000, MAP_H = 440;
 
-  /* ================= 地图 ================= */
   function renderMap() {
     if (!mapCanvas) return;
     mapCanvas.innerHTML = '';
@@ -463,7 +551,6 @@
     tryUrl(0);
   }
 
-  /* ================= 通用 ================= */
   function clearAll() {
     timers.forEach(t => clearTimeout(t)); timers = [];
     if (raf) cancelAnimationFrame(raf); raf = null;
@@ -538,13 +625,6 @@
 
   function schedule(fn, ms) { timers.push(setTimeout(fn, ms)); }
 
-  /* ================= 时间线 =================
-     0–4s   Intro
-     4–12s  Market
-     12–42s Feature（10 × 3s demo 视频）
-     42–50s Super AI
-     50–60s Summary（15 features，停留收尾）
-  =========================================== */
   function play() {
     clearAll();
     replay.style.display = 'none';
