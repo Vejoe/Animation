@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>DSP3 60s Demo — Final</title>
+<title>DSP3 60s Demo — 10 Demos + 15 Feature Summary</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -121,20 +121,20 @@
   }
   .market-list span.lit { color: #fff; background: #c8452d; border-color: #c8452d; }
 
-  /* ---------- Feature ---------- */
+  /* ---------- Feature（10 个 demo 快闪） ---------- */
   .feature-wrap { flex: 1; display: flex; gap: 44px; min-height: 0; }
-  .feature-left { width: 360px; display: flex; flex-direction: column; flex-shrink: 0; justify-content: center; }
+  .feature-left { width: 340px; display: flex; flex-direction: column; flex-shrink: 0; justify-content: center; }
   .feature-group {
     font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
     color: #c8452d; margin-bottom: 4px;
   }
-  .feature-no { font-family: Georgia, serif; font-size: 84px; line-height: 1; color: #c8452d; }
+  .feature-no { font-family: Georgia, serif; font-size: 88px; line-height: 1; color: #c8452d; }
   .feature-name {
-    font-family: Georgia, serif; font-size: 28px; line-height: 1.2;
-    margin-top: 6px; letter-spacing: -0.3px;
+    font-family: Georgia, serif; font-size: 34px; line-height: 1.12;
+    margin-top: 4px; letter-spacing: -0.5px;
   }
   .feature-value {
-    margin-top: 18px; font-size: 14px; line-height: 1.7; color: #6f6a61;
+    margin-top: 18px; font-size: 15px; line-height: 1.7; color: #6f6a61;
     padding-top: 16px; border-top: 1px solid #ddd8ce;
   }
   .feature-right { flex: 1; display: flex; min-width: 0; }
@@ -173,16 +173,16 @@
   }
   @keyframes slide { 0% { left: -40%; } 65%, 100% { left: 100%; } }
 
-  /* ---------- Summary（最后一个画面） ---------- */
+  /* ---------- Summary（15 features，最后画面） ---------- */
   .summary-title {
     font-family: Georgia, serif; font-weight: 400;
     font-size: 40px; letter-spacing: -1px; margin-bottom: 4px;
   }
-  .summary-sub { font-size: 12px; color: #8a857c; margin-bottom: 20px; letter-spacing: .5px; }
-  .grid-wrap { display: flex; flex-direction: column; gap: 14px; }
+  .summary-sub { font-size: 12px; color: #8a857c; margin-bottom: 18px; letter-spacing: .5px; }
+  .grid-wrap { display: flex; flex-direction: column; gap: 12px; }
   .grid-row-label {
     font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-    color: #c8452d; margin-bottom: 6px;
+    color: #c8452d; margin-bottom: 5px;
   }
   .grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -190,18 +190,18 @@
     border: 1px solid #ddd8ce;
   }
   .grid-card {
-    background: #f7f5f0; padding: 12px 14px; min-height: 66px;
+    background: #f7f5f0; padding: 10px 13px; min-height: 60px;
     display: flex; flex-direction: column; justify-content: space-between;
     opacity: .3; transition: all .4s ease;
   }
   .grid-card .g-no { font-size: 9px; letter-spacing: 2px; color: #c8452d; }
   .grid-card .g-name {
-    font-family: Georgia, serif; font-size: 12.5px; color: #111;
-    line-height: 1.25;
+    font-family: Georgia, serif; font-size: 12px; color: #111;
+    line-height: 1.22;
   }
   .grid-card.lit { opacity: 1; background: #fffdf8; }
   .summary-line {
-    margin-top: 18px; font-size: 14px; color: #6f6a61;
+    margin-top: 16px; font-size: 14px; color: #6f6a61;
     display: flex; gap: 10px; align-items: baseline;
   }
   .summary-line b { font-family: Georgia, serif; font-size: 22px; color: #c8452d; font-weight: 400; }
@@ -239,7 +239,7 @@
     </div>
   </section>
 
-  <!-- 3. Feature -->
+  <!-- 3. Feature（10 个 demo） -->
   <section class="scene" id="scene-feature">
     <div class="topbar"><span class="brand">DSP3</span><span>Feature Highlights</span></div>
     <div class="feature-wrap">
@@ -263,7 +263,7 @@
     <div class="ai-line"></div>
   </section>
 
-  <!-- 5. Summary（最后画面） -->
+  <!-- 5. Summary（15 features，最后画面） -->
   <section class="scene" id="scene-summary">
     <div class="topbar"><span class="brand">DSP3</span><span>Year in Review</span></div>
     <div class="summary-title">Everything, in one place.</div>
@@ -288,30 +288,49 @@
 <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
 <script>
-  /* ================= 功能：Mobile 9 + Browser 6 = 15 ================= */
-  const FEATURES = [
-    // Mobile
-    { group: "Mobile",  name: "Mobile Device Setup",                          value: "Guided setup that gets devices ready in minutes." },
-    { group: "Mobile",  name: "Mobile Login",                                 value: "Fast, secure sign-in on every mobile device." },
-    { group: "Mobile",  name: "Mobile Manage Security",                       value: "Full control over security settings, in-app." },
-    { group: "Mobile",  name: "Mobile ITS (Transaction Payment Journey) / Reauth", value: "Step-up verification across the payment journey." },
-    { group: "Mobile",  name: "Global Account Linkage",                       value: "Link accounts across markets in one flow." },
-    { group: "Mobile",  name: "OpenBanking AIS/PIS",                          value: "Account information and payment initiation, mobile." },
-    { group: "Mobile",  name: "wco Journey",                                  value: "A smoother journey for every mobile user." },
-    { group: "Mobile",  name: "Mobile Device Switch",                         value: "Switch devices without losing a step." },
-    { group: "Mobile",  name: "IAuth Integration",                            value: "Seamless identity authentication built in." },
-    // Browser
-    { group: "Browser", name: "Browser Logon (Hardtoken & Mobile Approve)",   value: "Secure web sign-in with hardtoken or mobile approval." },
-    { group: "Browser", name: "Manage Security (browser)",                    value: "Manage security preferences from the browser." },
-    { group: "Browser", name: "TDS (Transaction Payment Journey) / Reauth",   value: "Browser-side transaction verification, done right." },
-    { group: "Browser", name: "Global Account Linkage (browser)",             value: "Connect global accounts from the web." },
-    { group: "Browser", name: "WMT (delegate)",                               value: "Delegate access with confidence." },
-    { group: "Browser", name: "OpenBanking AIS/PIS (browser)",                value: "Account information and payment initiation, web." }
+  /* =========================================================
+     1) 快闪段：10 个 demo 功能（每个 3 秒）
+     ========================================================= */
+  const DEMO_FEATURES = [
+    { group: "Mobile",  name: "Mobile Device Setup",            value: "Guided setup that gets devices ready in minutes." },
+    { group: "Mobile",  name: "Mobile Login",                   value: "Fast, secure sign-in on every mobile device." },
+    { group: "Mobile",  name: "Mobile Manage Security",         value: "Full control over security settings, in-app." },
+    { group: "Mobile",  name: "Mobile Change PIN",              value: "Self-service PIN changes, no support call needed." },
+    { group: "Mobile",  name: "Mobile ITS / Reauth",            value: "Step-up verification when it matters most." },
+    { group: "Mobile",  name: "Global Account Linkage",         value: "Link accounts across markets in one flow." },
+    { group: "Browser", name: "Browser Logon",                  value: "A seamless web sign-in experience." },
+    { group: "Browser", name: "Browser Manage Security",        value: "Manage security preferences from the browser." },
+    { group: "Browser", name: "Browser Global Account Linkage", value: "Connect global accounts from the web." },
+    { group: "Browser", name: "Browser TDS/Reauth",             value: "Browser-side reauthentication, done right." }
   ];
-  const MOBILE_FEATURES  = FEATURES.filter(f => f.group === "Mobile");
-  const BROWSER_FEATURES = FEATURES.filter(f => f.group === "Browser");
 
-  /* ================= 市场 ================= */
+  /* =========================================================
+     2) 总结页：全部 15 个 features
+     ========================================================= */
+  const SUMMARY_MOBILE = [
+    "Device Setup",
+    "Mobile Login",
+    "Manage Security",
+    "ITS (Transaction Payment Journey) / Reauth",
+    "Global Account Linkage",
+    "OpenBanking AIS/PIS",
+    "WCO Journey",
+    "Device Switch",
+    "IAuth Integration"
+  ];
+
+  const SUMMARY_BROWSER = [
+    "Browser Logon (Hardtoken & Mobile Approve)",
+    "Manage Security (browser)",
+    "TDS (Transaction Payment Journey) / Reauth",
+    "Global Account Linkage (browser)",
+    "WMT (delegate)",
+    "OpenBanking AIS/PIS (browser)"
+  ];
+
+  /* =========================================================
+     3) 市场
+     ========================================================= */
   const MARKETS = [
     { label: "UK",  lon: -3.44,  lat: 55.38 },
     { label: "CN",  lon: 104.20, lat: 35.86 },
@@ -323,7 +342,9 @@
     { label: "HK",  lon: 114.17, lat: 22.32 }
   ];
 
-  /* ================= Fallback 简化世界地图 ================= */
+  /* =========================================================
+     4) Fallback 简化世界地图
+     ========================================================= */
   const FALLBACK_GEO = {
     type: "FeatureCollection",
     features: [
@@ -350,17 +371,17 @@
     summary: document.getElementById('scene-summary')
   };
 
-  const mapCanvas  = document.getElementById('mapCanvas');
-  const marketList = document.getElementById('marketList');
-  const marketNum  = document.getElementById('marketNum');
-  const fGroup     = document.getElementById('fGroup');
-  const fNo        = document.getElementById('fNo');
-  const fName      = document.getElementById('fName');
-  const fValue     = document.getElementById('fValue');
-  const gridMobile = document.getElementById('gridMobile');
-  const gridBrowser= document.getElementById('gridBrowser');
-  const progress   = document.getElementById('progress');
-  const replay     = document.getElementById('replay');
+  const mapCanvas   = document.getElementById('mapCanvas');
+  const marketList  = document.getElementById('marketList');
+  const marketNum   = document.getElementById('marketNum');
+  const fGroup      = document.getElementById('fGroup');
+  const fNo         = document.getElementById('fNo');
+  const fName       = document.getElementById('fName');
+  const fValue      = document.getElementById('fValue');
+  const gridMobile  = document.getElementById('gridMobile');
+  const gridBrowser = document.getElementById('gridBrowser');
+  const progress    = document.getElementById('progress');
+  const replay      = document.getElementById('replay');
 
   const MAP_W = 1000, MAP_H = 440;
 
@@ -478,7 +499,7 @@
   }
 
   function setFeature(index) {
-    const f = FEATURES[index];
+    const f = DEMO_FEATURES[index];
     fGroup.textContent = f.group;
     fNo.textContent = String(index + 1).padStart(2, '0');
     fName.textContent = f.name;
@@ -488,15 +509,15 @@
   function buildSummary() {
     function fill(container, list, offset) {
       container.innerHTML = '';
-      list.forEach((f, i) => {
+      list.forEach((name, i) => {
         const d = document.createElement('div');
         d.className = 'grid-card';
-        d.innerHTML = `<div class="g-no">${String(offset + i + 1).padStart(2, '0')}</div><div class="g-name">${f.name.replace(/^(Mobile|Browser) /, '')}</div>`;
+        d.innerHTML = `<div class="g-no">${String(offset + i + 1).padStart(2, '0')}</div><div class="g-name">${name}</div>`;
         container.appendChild(d);
       });
     }
-    fill(gridMobile, MOBILE_FEATURES, 0);
-    fill(gridBrowser, BROWSER_FEATURES, MOBILE_FEATURES.length);
+    fill(gridMobile, SUMMARY_MOBILE, 0);
+    fill(gridBrowser, SUMMARY_BROWSER, SUMMARY_MOBILE.length);
   }
 
   function lightSummary() {
@@ -520,9 +541,9 @@
   /* ================= 时间线 =================
      0–4s   Intro
      4–12s  Market
-     12–42s Feature（15 × 2s）
+     12–42s Feature（10 × 3s demo 视频）
      42–50s Super AI
-     50–60s Summary（最后停留）
+     50–60s Summary（15 features，停留收尾）
   =========================================== */
   function play() {
     clearAll();
@@ -551,7 +572,9 @@
     schedule(() => {
       showScene('feature');
       setFeature(0);
-      for (let i = 1; i < FEATURES.length; i++) schedule(() => setFeature(i), i * 2000);
+      for (let i = 1; i < DEMO_FEATURES.length; i++) {
+        schedule(() => setFeature(i), i * 3000);
+      }
     }, 12000);
 
     schedule(() => showScene('ai'), 42000);
